@@ -20,7 +20,6 @@ void WatcherScanner::handleMessage(size_t index, const wtr::event& ev) {
 }
 
 void WatcherScanner::handleEvent(size_t index, const wtr::event& ev) {
-  qInfo() << ev.path_name.native();
   if (ev.path_type == wtr::event::path_type::watcher) {
     handleMessage(index, ev);
     return;
