@@ -4,7 +4,7 @@
 #include "watcher.hpp"
 #include <vector>
 
-class WatcherScanner: public AbstractScanner {
+class WatcherScanner : public AbstractScanner {
 private:
   FileIndexerDatabase m_db;
 
@@ -15,8 +15,8 @@ private:
   };
   std::vector<Element> m_watches;
 
-  void handleMessage(size_t index, const wtr::event& ev);
-  void handleEvent(size_t index, const wtr::event& ev);
+  void handleMessage(size_t index, const wtr::event &ev);
+  void handleEvent(size_t index, const wtr::event &ev);
 
 public:
   void run() override;

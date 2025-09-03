@@ -72,7 +72,7 @@ void FileIndexer::start() {
   }
 
   // Watch for changes
-  for (const auto& entrypoint: m_entrypoints) {
+  for (const auto &entrypoint : m_entrypoints) {
     m_dispatcher.enqueue({.type = ScanType::Watcher, .path = entrypoint.root});
   }
 }
