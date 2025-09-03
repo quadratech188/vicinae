@@ -35,6 +35,9 @@ void WatcherScanner::handleEvent(size_t index, const wtr::event& ev) {
       break;
 
     case wtr::event::effect_type::modify:
+      m_db.indexFiles({ev.path_name});
+      break;
+
     case wtr::event::effect_type::owner:
     case wtr::event::effect_type::other:
       break;
