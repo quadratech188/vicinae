@@ -11,6 +11,7 @@ private:
   struct Element {
     FileIndexerDatabase::ScanRecord m_record;
     std::unique_ptr<wtr::watch> m_watch;
+    bool m_failed;
   };
   std::vector<Element> m_watches;
 

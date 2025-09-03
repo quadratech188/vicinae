@@ -2,13 +2,19 @@
 #include "abstract-scanner.hpp"
 #include "file-indexer-db.hpp"
 #include <QDebug>
+#include <qlogging.h>
 
 void WatcherScanner::handleMessage(size_t index, const wtr::event& ev) {
   switch(ev.path_name.native().front()) {
     // TODO: Obtain a list of these messages
-    case 'e':
+
+    case 's':
+    case 'w':
       qWarning() << "Watcher error:" << ev.path_name.native();
-      m_db.updateScanStatus(m_watches[index].m_record.id, FileIndexerDatabase::ScanStatus::Failed);
+    case 'e':
+      qWarning() << "Fatal Watcher error:" << ev.path_name.native();
+      m_db.setScanError(m_watches[index].m_record.id, QString::fromStdString(ev.path_name.native()));
+      m_watches[index].m_failed = true;
       break;
   }
 }
@@ -67,14 +73,16 @@ void WatcherScanner::run() {
     size_t index = m_watches.size();
     m_watches.emplace_back(*record, std::make_unique<wtr::watch>(scan.path, [this, index](const wtr::event& ev) {
           handleEvent(index, ev);
-          }));
+          }), false);
   }
 }
 
 void WatcherScanner::stop() {
   AbstractScanner::stop();
-  for (auto& [record, watch]: m_watches) {
+  for (auto& [record, watch, failed]: m_watches) {
     watch->close();
-    m_db.updateScanStatus(record.id, FileIndexerDatabase::ScanStatus::Finished);
+    if (!failed) {
+      m_db.updateScanStatus(record.id, FileIndexerDatabase::ScanStatus::Finished);
+    }
   }
 }
